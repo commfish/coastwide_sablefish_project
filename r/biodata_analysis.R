@@ -3,16 +3,14 @@
 # Jane Sullivan (jane.sullivan1@alaska.gov)
 # 2018-01-08
 
-# Includes length-at-age, weight-at-age, von Bertalanffy growth parameter estimates, maturity,
-# proportions mature, length and age compositions.
+# Includes age and length compositions, proportions mature at age, length and
+# weight-at-age for sablefish fishery and survey data in Southeast Alaska.
 
 # Libraries and ggplot theme ----
 
 library(ROracle)
 library(tidyverse)
 library(mosaic)
-library(broom)
-library(stats4)
 
 # Data ----
 

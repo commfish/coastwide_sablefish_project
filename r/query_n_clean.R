@@ -16,8 +16,7 @@ theme_set(theme_bw(base_size = 12) +
 
 # Oracle connections ----
 
-# Database usernames and passwords (this file and file path are user-specific
-# and ignored for confidentiality)
+# Database usernames and passwords (this file and file path are user-specific)
 ora <- read_csv("~/my_oracle/database.csv") 
 
 # Connection strings in T:/Toolbox/TNS/tnsnames.ora
@@ -44,7 +43,7 @@ zprod_channel <- dbConnect(drv = dbDriver('Oracle'),
                            password = ora$zprod_pw, 
                            dbname = zprod)
 
-# Data warehouse. eLandings, fish tickets, maybe tag lab data too?
+# Data warehouse. eLandings, fish tickets, GEF
 dwprod <- "(DESCRIPTION =
 (ADDRESS = (PROTOCOL = TCP)(HOST = db-dwprod.dfg.alaska.local)(PORT = 1521))
 (CONNECT_DATA = (SERVER = DEDICATED)
@@ -195,7 +194,7 @@ ggplot(nsei) +
 # project codes: query zprod: "select new_project_code, project_code, project from
 # lookup.project_conversion where category_code = 'g'"
 
-# new (Zander) = old (IFDB) = desciption
+# new (Zander) = old (IFDB) = description
 # 601 = 01 = Clarence sablefish longline survey
 # 602 = 02 = commercial longline trip
 # 603 = 03 = Chatham sablefish longline survey
