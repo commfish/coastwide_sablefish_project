@@ -32,11 +32,12 @@ read_csv("data/biological/fishery/detailed_fisherybio_nsei_ssei_1988_2017.csv",
 
 bind_rows(srv_bio, potsrv_bio, fsh_bio) -> bio
 
-#Summary of data availability:
+#Summary of data available:
 bio %>% 
   group_by(Gear, Source, Mgmt_area) %>% 
   summarise(min_year = min(year),
-          max_year = max(year))
+          max_year = max(year),
+          no_of_years = n_distinct(year))
 
 # Age comps ----
 
@@ -212,4 +213,3 @@ waa %>%
   ) %>% arrange(description, Gear, Source, Mgmt_area, Sex, year, age) %>% 
   select(description, Gear, Source, Mgmt_area, Sex, year, age, mean_weight, sd_weight, n) %>% 
   write_csv("data/biological/allsable_weightage.csv")
-

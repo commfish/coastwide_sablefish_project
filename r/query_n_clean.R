@@ -210,7 +210,7 @@ ggplot(nsei) +
 
 # length: fork length, cm
 # weight: kg
-# Matuirty: "0" = immature, "1" = mature
+# Maturity: "0" = immature, "1" = mature
 
 query <-
   " select  year, project_code, g_management_area_code, species_code, 
