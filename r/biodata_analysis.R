@@ -8,7 +8,6 @@
 
 # Libraries and ggplot theme ----
 
-library(ROracle)
 library(tidyverse)
 library(mosaic)
 
@@ -136,6 +135,7 @@ lendat %>%
            fill = list(n = 0, proportion = 0)) %>% 
   write_csv("data/biological/allsable_lengthcomps.csv")
 
+
 # Maturity proportions ----
 
 # Pers. comm. K. Fenske 2018-01-05: Just provide proportion mature by age (not
@@ -148,14 +148,14 @@ bio %>%
 matdat %>% 
   # Proportion mature at age by Source, Gear, year, area, Sex
   count(Gear, Source, Mgmt_area, Sex, year, Maturity, age) %>%
-  group_by(Gear, Source, Mgmt_area, Sex, year, age) %>% 
+  group_by(Gear, Source, Mgmt_area, Sex, year) %>% 
   mutate(proportion = round( n / sum(n), 4),
-         description = "propmatureby_gear_source_area_sex_age") %>%
+         description = "propmatureby_gear_source_area_sex_age") %>% 
   bind_rows(
     # Proportion mature at age by Source, Gear, year, Sex (areas combined)
     matdat %>% 
       count(Gear, Source, Sex, year, Maturity, age) %>%
-      group_by(Gear, Source, Sex, year, age) %>% 
+      group_by(Gear, Source, Sex, year) %>% 
       mutate(proportion = round( n / sum(n), 4),
              Mgmt_area = "NSEI_SSEI_combined",
              description = "propmatureby_gear_source_sex_age")) %>% 

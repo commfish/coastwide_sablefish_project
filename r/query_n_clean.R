@@ -165,8 +165,8 @@ ggplot(state_reg1n2 %>%
 # D. Carlile to S. Dressel. I include it for comparison but would not recommend
 # using it for anything until it's been vetted (and I don't know if that's possible). 
 
-read_csv("data/nsei_historicalsablecatch_nosource_carlile_1907_2000.csv") %>% 
-  mutate(data_source = "Historical (unkown)") -> nsei_historical
+read_csv("data/catch/nsei_historicalsablecatch_nosource_carlile_1907_2000.csv") %>% 
+  mutate(data_source = "Historical (unknown)") -> nsei_historical
 
 state_reg1n2 %>% 
   filter(Mgt_area == "NSEI") %>% 
@@ -305,3 +305,4 @@ merge(srv_bio, stat_areas, by = "STAT") %>%
   select(year = YEAR, Gear, Source, Mgmt_area = G_MANAGEMENT_AREA_CODE, 
          Spp_cde = SPECIES_CODE, length = LENGTH, weight = WEIGHT, age = AGE, Sex, Maturity)  %>% 
   write_csv("data/biological/survey/detailed_llsrvbio_nsei_ssei_1985_2017.csv")
+
