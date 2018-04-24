@@ -57,3 +57,32 @@ The detailed version of the fishery data are available in data/biological/fisher
 ## Von Bertalanffy growth rate parameters
 
 I provided parameter estimates for Chatham Strait in data/biological/compare_vonb_adfg_noaa.csv. This was from an earlier analysis, and the code is available at https://github.com/commfish/seak_sablefish/blob/master/r_code/biological.R 
+
+## Effort in the Longline Survey and Fishery
+
+Results for the following analyses can be found in data/effort/all_cpue_indices.csv. Effort data are available for the following Source/Mgmt_area combinations as follows:
+
+|      Gear|  Source| Mgmt_area| min_year| max_year|
+|----------|--------|----------|---------|---------|
+|  Longline|  Survey|      NSEI|    1985*|     2017|         
+|  Longline|  Survey|      SSEI|    1988*|     2017|
+|  Longline| Fishery|      NSEI|     1997|     2017|
+|  Longline| Fishery|      SSEI|     1997|     2017|
+
+* Soak time in the surveys was 1 hour prior to 1997, and 3 hours in 1997 to present. According to Carlile et al. (2002), 1-hour soak time CPUEs were about 43% lower than those associated with 3-hour soak times (Page 10 http://www.sf.adfg.state.ak.us/fedaidpdfs/RIR.1J.2002.02.pdf). One could correct pre-1997 survey data by dividing by 0.43. If absolutely necessary, I suggest using a higher CV pre-1997, or omit these years entirely. Experiments (Sigler 1993, UW PhD dissertation) and summaries (Sigler 2000, Tech Report NMFS 130) indicate that initial capture rates vary without trend in the first hour and thus appear to have no relationship with density of sablefish. Consequently, I chose not to include pre-1997 longline survey effort indices, although the raw data are available in data/effort/llsrv_cpue_nsei_ssei_raw.csv if desired.
+
+Hook spacing in the fishery and survey was standardized following Sigler and Lunsford (2001, CJFAS).
+
+We use numbers per unit effort (NPUE; number per hook) as the measure of effort in the longline survey. Note that the CV reported is actually the relative standard error (RSE), such that
+
+$$CV=RSE=(s/\sqrt{n})/\bar{x}.$$
+
+**NOT COMPLETED** - Let me know if and when you want to do this.
+
+The relative population number (RPN) in year $y$ is given by
+
+$$RPN_{y}=\sum_{s=1}^S{NPUE_{s,y}*Area_{s,y}},$$
+
+where the product of NPUE in each depth stratum $s$ and the physical area (km^2) of each stratum summed across all strata in the management area. Depth strata (from NMFS): 3 = 201-300 m; 4 = 301-400 m; 5 =401-600 m; 6 =601-800 m; and 7 =801-1,000 m (Sigler 2000).
+
+We use weight per unit effort (WPUE; round lbs per hook) as the measure of effort in the ADFG longline fishery in Chatham and Clarence Straits (these are all averaged across all depths). The relative population weight (RPW) is given by the same equation as RPN, subsituting WPUE for NPUE. Fishery CPUE information was collected through skipper interview and voluntary logbook programs prior to 1997 and through mandatory logbook program beginning in 1997 (Carlile et al. 2002). I include the "official" legacy WPUE values for your reference, but I don't have any methods to offer for them. Similar to the survey NPUE, I report the RSE as the CV for 1997 to present.

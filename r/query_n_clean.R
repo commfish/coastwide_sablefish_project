@@ -8,6 +8,7 @@
 library(ROracle)
 library(tidyverse)
 library(mosaic)
+library(lubridate)
 
 theme_set(theme_bw(base_size = 12) + 
             theme(panel.grid.major = element_blank(),
@@ -306,3 +307,105 @@ merge(srv_bio, stat_areas, by = "STAT") %>%
          Spp_cde = SPECIES_CODE, length = LENGTH, weight = WEIGHT, age = AGE, Sex, Maturity)  %>% 
   write_csv("data/biological/survey/detailed_llsrvbio_nsei_ssei_1985_2017.csv")
 
+# Fishery CPUE/logbook ----
+
+# Longline survey CPUE ----
+
+# Physical areas of stat areas. From S. Larsen 2018-04-23. Will use this to
+# calculate relative population numbers/weight.
+
+read_csv("data/groundfish_ssei_nsei_statarea_larsen_20180423.csv") %>% 
+  select(Mgmt_area = SUBDISTRICT_CODE, Stat = STAT_AREA, stat_km2 = Area_Kilometers) %>% 
+  mutate(Stat = as.character(Stat)) %>% 
+  arrange(Mgmt_area) -> stat_km2
+
+# 601 = 01 = Clarence sablefish longline survey
+# 603 = 03 = Chatham sablefish longline survey
+query <- 
+  " select  year, project_code, trip_no, target_species_code, adfg_no, vessel_name, 
+            time_first_buoy_onboard, number_of_stations, hooks_per_set, hook_size, 
+            hook_spacing_inches, sample_freq, last_skate_sampled, effort_no, station_no,
+            g_stat_area as stat, start_latitude_decimal_degrees as start_lat,
+            start_longitude_decimal_degree as start_lon, end_latitude_decimal_degrees as end_lat,
+            end_longitude_decimal_degrees as end_lon, avg_depth_fathoms * 1.8288 as depth_meters, 
+            number_hooks, bare, bait, invalid, sablefish, 
+            subset_condition_code
+
+from    output.out_g_sur_longline_hook_acc_bi
+
+where   project_code in ('603', '03', '601', '01')" 
+
+dbGetQuery(zprod_channel, query) -> srv_eff
+
+srv_eff %>% 
+  filter(YEAR < 2018) %>% #the programmers have some dummy data in the db for the upcoming year
+  mutate(date = ymd(as.Date(TIME_FIRST_BUOY_ONBOARD)), #ISO 8601 format
+         julian_day = yday(date)) %>% 
+  select(year = YEAR, Project_cde = PROJECT_CODE, Station_no = STATION_NO,
+         trip_no = TRIP_NO, Adfg = ADFG_NO, Vessel = VESSEL_NAME, date, julian_day,
+         Stat = STAT,  set = EFFORT_NO, start_lat = START_LAT, start_lon = START_LON, end_lat = END_LAT,
+         end_lon = END_LON, depth = DEPTH_METERS, no_hooks = NUMBER_HOOKS, hooks_bare = BARE,
+         hooks_bait = BAIT, hook_invalid = INVALID, hooks_sablefish = SABLEFISH,
+         subset_condition_cde = SUBSET_CONDITION_CODE) %>%
+  # join in stat area phys. area info
+  left_join(stat_km2, by = "Stat") -> srv_eff
+
+srv_eff %>% 
+  group_by(Project_cde) %>% 
+  summarize(n = length(trip_no),
+             min_yr = min(year),
+             max_yr = max(year))
+
+write_csv(srv_eff, paste0("data/effort/llsrv_cpue_nsei_ssei_raw.csv"))
+
+# Fishery cpue ----
+
+# Kamala Carroll pulls the IFDB view out_g_log_longline_c_e, populates new
+# columns effort_target_species_code and effort_comments, and sends to Scott
+# Johnson. Scott runs a series of Martina Kallenburger's sql scripts (which I
+# don't have access to) that match fish tickets pounds back to set based on
+# Kamala's set target designation based on some undocumented methodology
+# (proportional to numbers/pounds in logbook?). It lives in a view called
+# sablefish_cpue_final_view in scottj's IFDB schema, though he has made a public
+# synonym for it. This output doesn't contain information on sets designated as
+# halibut targets. Note that it is missing effort_no's (effort_no's = individual
+# sets).
+
+query <- 
+  " select  year, project_code, trip_no, adfg_no, longline_system_code, sell_date, 
+            hook_size, hook_spacing, number_of_skates, number_of_hooks,
+            average_depth_meters, g_management_area_code, g_stat_area, trip_target, set_target,
+            effort_no, sable_lbs_per_set, time_set, time_hauled, 
+            start_latitude_decimal_degrees, start_longitude_decimal_degree
+
+    from    sablefish_cpue_final_view
+
+    where   g_management_area_code in ('NSEI', 'SSEI')"
+
+dbGetQuery(ifdb_channel, query) -> fsh_eff
+
+fsh_eff %>% 
+  # rename, define factors, remove mixed hook sizes
+  mutate(date = ymd(as.Date(TIME_SET)), #ISO 8601 format
+         julian_day = yday(date),
+         soak = difftime(TIME_HAULED, TIME_SET, units = "hours"),
+         Gear = factor(LONGLINE_SYSTEM_CODE),
+         Hook_size = HOOK_SIZE, 
+         hook_space = HOOK_SPACING, #*FLAG* - check that hook_space is in inches
+         Size = factor(as.numeric(gsub("[^0-9]", "", Hook_size))),
+         no_hooks = NUMBER_OF_HOOKS,
+         sable_lbs_set = SABLE_LBS_PER_SET) %>% 
+  select(year = YEAR, Mgmt_area = G_MANAGEMENT_AREA_CODE, trip_no = TRIP_NO, 
+         Adfg = ADFG_NO, Spp_cde = TRIP_TARGET, date, julian_day, 
+         soak, Gear = LONGLINE_SYSTEM_CODE, Hook_size, Size, 
+         hook_space, Stat = G_STAT_AREA, no_hooks, depth = AVERAGE_DEPTH_METERS, 
+         sets = EFFORT_NO, sable_lbs_set, start_lat = START_LATITUDE_DECIMAL_DEGREES,
+         start_lon = START_LONGITUDE_DECIMAL_DEGREE) -> fsh_eff
+
+fsh_eff %>% 
+  group_by(Mgmt_area) %>% 
+  summarize(n = length(trip_no),
+            min_yr = min(year),
+            max_yr = max(year))
+
+write_csv(fsh_eff, paste0("data/effort/fishery_cpue_nsei_ssei_CONFIDENTIAL.csv"))
