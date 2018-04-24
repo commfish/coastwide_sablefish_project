@@ -20,7 +20,7 @@ I supplied three data files for catch:
 
 ## Abundance index estimates (or absolute abundance) from survey, mark-recapture, or fishery data, by year, standardized if possible or noted as unstandardized if they aren’t. Biomass and abundance only available for Chatham Strait.
 
-These estimates are only currently available for Chatham Strait (NSEI). I included abundance (age-2+), biomass (age-4+), and ABC/corresponding harvest policy when available. I used Franz's age-structured assessment to populate 1980-2002, but this model was not used for management. We are working on CPUE, and can provide those estimates at a later date.
+These estimates are only currently available for Chatham Strait (NSEI). I included abundance (age-2+), biomass (age-4+), and ABC/corresponding harvest policy when available. I used Franz's age-structured assessment to populate 1980-2002, but this model was not used for management. 
 
 ## Natural mortality used or estimated. 
 
