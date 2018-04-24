@@ -57,3 +57,24 @@ The detailed version of the fishery data are available in data/biological/fisher
 ## Von Bertalanffy growth rate parameters
 
 I provided parameter estimates for Chatham Strait in data/biological/compare_vonb_adfg_noaa.csv. This was from an earlier analysis, and the code is available at https://github.com/commfish/seak_sablefish/blob/master/r_code/biological.R 
+
+## Effort in the Longline Survey and Fishery
+
+The longline survey used numbers per unit effort (NPUE; lbs per hook) as a measure of effort. The relative population number (RPN) in year $y$ is given by
+
+$$RPN_{y}=\sum_{s=1}^S{NPUE_{s,y}*Area_{s,y}},$$
+
+where the product of NPUE in each ADFG stat area $s$ and the physical area (km^2) summed across all stat areas in the management area.
+
+**IMPORTANT NOTE** In the NSEI/SSEI longline surveys, all effort data 
+
+Effort data are available for the following Source/Mgmt_area combinations as follows:
+
+|      Gear|  Source| Mgmt_area| min_year| max_year|
+|----------|--------|----------|---------|---------|
+|  Longline|  Survey|      NSEI|     1985|     2017|
+|  Longline|  Survey|      SSEI|     1988|     2017|
+|  Longline| Fishery|      NSEI|     1997|     2017|
+|  Longline| Fishery|      SSEI|     1997|     2017|
+
+
