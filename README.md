@@ -6,7 +6,11 @@ All queries and data prep can be found in r/query_n_clean.r.
 
 ## Catch by gear and ADFG management area, 1960-present, or other dates (going back in time) as available. 
 
+**Update 2018-04-24: I've struggled getting the IFDB database and Gross Earnings File to match up to agency reports. I've uploaded a new harvest file called data/catch/landings_nseisseicombined_1980_2016_USEME.csv. These numbers come straight from ADFG Annual Harvest Objective Memos. Because they're the only values that have been published, I want to use them until I can thoroughly review these other data sources. They represent reported landings in round lbs in the NSEI from 1980-2016 and SSEI from 1985-2016. I left 1907-1979 with Dave Carlile's historical catch reconstruction, but these numbers are for NSEI only.**
+
 Pers. comm. with K. Fenske 2018-01-03: she already has Aluetian Is. data from AKFIN and only needs state data for NSEI, SSEI, and PWS. 
+
+Reserve for later use:
 
 I suggested using the Gross Earnings File (GEF) as the definitive source for statewide catch reconstructions based on the recommendation of J. Shriver. Column descriptions for GEF in data/catch/gross_earnings_file/GEF_Variable_Descriptions_Working_JShriver_2014_12_08.xlsx. Descriptions for ADFG management areas can be found in adfg_mgt_area_metadata_slarsen.shp. S. Larsen also helped me update some of the stat area NAs in Region 1 and 2, source file data/catch/gross_earnings_file/SJL_region2_statareas_districts
 
@@ -85,4 +89,4 @@ $$RPN_{y}=\sum_{s=1}^S{NPUE_{s,y}*Area_{s,y}},$$
 
 where the product of NPUE in each depth stratum $s$ and the physical area (km^2) of each stratum summed across all strata in the management area. Depth strata (from NMFS): 3 = 201-300 m; 4 = 301-400 m; 5 =401-600 m; 6 =601-800 m; and 7 =801-1,000 m (Sigler 2000).
 
-We use weight per unit effort (WPUE; round lbs per hook) as the measure of effort in the ADFG longline fishery in Chatham and Clarence Straits (these are all averaged across all depths). The relative population weight (RPW) is given by the same equation as RPN, subsituting WPUE for NPUE. Fishery CPUE information was collected through skipper interview and voluntary logbook programs prior to 1997 and through mandatory logbook program beginning in 1997 (Carlile et al. 2002). I include the "official" legacy WPUE values for your reference, but I don't have any methods to offer for them. Similar to the survey NPUE, I report the RSE as the CV for 1997 to present.
+We use weight per unit effort (WPUE; round lbs per hook) as the measure of effort in the ADFG longline fishery in Chatham and Clarence Straits (these are all averaged across all depths). The relative population weight (RPW) is given by the same equation as RPN, subsituting WPUE for NPUE. Fishery CPUE information was collected through skipper interview and voluntary logbook programs prior to 1997 and through mandatory logbook program beginning in 1997 (Carlile et al. 2002). I include the "official" legacy WPUE values for your reference, but I don't have any methods to offer for them. Similar to the survey NPUE, I report the RSE as the CV for 1997 to present. For legacy WPUE values, I set the CV equal to 0.05 in the Google Drive (not in the code though).

@@ -1,4 +1,4 @@
-# Effort analyses
+# Fishery and survey effort
 
 # Data request from K. Fenske 2017-12-26
 # Jane Sullivan (jane.sullivan1@alaska.gov)
