@@ -6,7 +6,7 @@ All queries and data prep can be found in r/query_n_clean.r.
 
 ## Catch by gear and ADFG management area, 1960-present, or other dates (going back in time) as available. 
 
-**Update 2018-04-24: I've struggled getting the IFDB database and Gross Earnings File to match up to agency reports. I've uploaded a new harvest file called data/catch/landings_nseisseicombined_1980_2016_USEME.csv. These numbers come straight from ADFG Annual Harvest Objective Memos. Because they're the only values that have been published, I want to use them until I can thoroughly review these other data sources. They represent reported landings in round lbs in the NSEI from 1980-2016 and SSEI from 1985-2016. I left 1907-1979 with Dave Carlile's historical catch reconstruction, but these numbers are for NSEI only.**
+**Update 2018-04-24: I've struggled getting the IFDB database and Gross Earnings File to match up to agency reports. I've uploaded a new harvest file called data/catch/landings_nseisseicombined_1980_2016_USEME.csv. These numbers come straight from ADFG Annual Harvest Objective Memos. Because they're the only values that have been published, I want to use them until I can thoroughly review the other data sources. They represent reported landings in round lbs in the NSEI from 1980-2016 and SSEI from 1985-2016. I left 1907-1979 with Dave Carlile's historical catch reconstruction, but these numbers are for NSEI only.**
 
 Pers. comm. with K. Fenske 2018-01-03: she already has Aluetian Is. data from AKFIN and only needs state data for NSEI, SSEI, and PWS. 
 
@@ -14,13 +14,13 @@ Reserve for later use:
 
 I suggested using the Gross Earnings File (GEF) as the definitive source for statewide catch reconstructions based on the recommendation of J. Shriver. Column descriptions for GEF in data/catch/gross_earnings_file/GEF_Variable_Descriptions_Working_JShriver_2014_12_08.xlsx. Descriptions for ADFG management areas can be found in adfg_mgt_area_metadata_slarsen.shp. S. Larsen also helped me update some of the stat area NAs in Region 1 and 2, source file data/catch/gross_earnings_file/SJL_region2_statareas_districts
 
-I supplied three data files for catch:
+There are currently three "extra" data files for catch:
 
 1.  data/catch/gross_earnings_file/regions1n2_statewater_sablecatch_gef_1975_2016.csv -- Just catch in statewaters in Regions 1 and 2, which include the follow management areas: Northern Southeast Inside (NSEI), Southern Southeast Inside (SSEI), Prince William Sound (PWS), and Cook Inlet (CI).
 
 2.  data/catch/gross_earnings_file/allak_sablecatch_gef_1975_2016_CONFIDENTIAL.csv -- These are all records for sablefish from the GEF, in case Kari wants to use the GEF instead of a combination of AKFIN and GEF. 
 
-3.  data/catch/nsei_historicalsablecatch_nosource_carlile_1907_2000.csv -- An interesting but undocumented time series of catch in Chatham Strait going back to 1907.
+3.  data/catch/nsei_historicalsablecatch_nosource_carlile_1907_2000.csv -- An interesting but undocumented time series of catch in Chatham Strait going back to 1907. *Used on Google Drive*
 
 ## Abundance index estimates (or absolute abundance) from survey, mark-recapture, or fishery data, by year, standardized if possible or noted as unstandardized if they aren’t. Biomass and abundance only available for Chatham Strait.
 
@@ -68,24 +68,24 @@ Results for the following analyses can be found in data/effort/all_cpue_indices.
 
 |      Gear|  Source| Mgmt_area| min_year| max_year|
 |----------|--------|----------|---------|---------|
-|  Longline|  Survey|      NSEI|    1985*|     2017|         
-|  Longline|  Survey|      SSEI|    1988*|     2017|
+|  Longline|  Survey|      NSEI|    1985<sup>1</sup>|     2017|         
+|  Longline|  Survey|      SSEI|    1988<sup>1</sup>|     2017|
 |  Longline| Fishery|      NSEI|     1997|     2017|
 |  Longline| Fishery|      SSEI|     1997|     2017|
 
-* Soak time in the surveys was 1 hour prior to 1997, and 3 hours in 1997 to present. According to Carlile et al. (2002), 1-hour soak time CPUEs were about 43% lower than those associated with 3-hour soak times (Page 10 http://www.sf.adfg.state.ak.us/fedaidpdfs/RIR.1J.2002.02.pdf). One could correct pre-1997 survey data by dividing by 0.43. If absolutely necessary, I suggest using a higher CV pre-1997, or omit these years entirely. Experiments (Sigler 1993, UW PhD dissertation) and summaries (Sigler 2000, Tech Report NMFS 130) indicate that initial capture rates vary without trend in the first hour and thus appear to have no relationship with density of sablefish. Consequently, I chose not to include pre-1997 longline survey effort indices, although the raw data are available in data/effort/llsrv_cpue_nsei_ssei_raw.csv if desired.
+<sup>1</sup> Soak time in the surveys was 1 hour prior to 1997, and 3 hours in 1997 to present. According to Carlile et al. (2002), 1-hour soak time CPUEs were about 43% lower than those associated with 3-hour soak times (Page 10 http://www.sf.adfg.state.ak.us/fedaidpdfs/RIR.1J.2002.02.pdf). One could correct pre-1997 survey data by dividing by 0.43. If absolutely necessary, I suggest using a higher CV pre-1997, or omit these years entirely. Experiments (Sigler 1993, UW PhD dissertation) and summaries (Sigler 2000, Tech Report NMFS 130) indicate that initial capture rates vary without trend in the first hour and thus appear to have no relationship with density of sablefish. Consequently, I chose not to include pre-1997 longline survey effort indices, although the raw data are available in data/effort/llsrv_cpue_nsei_ssei_raw.csv if desired.
 
 Hook spacing in the fishery and survey was standardized following Sigler and Lunsford (2001, CJFAS).
 
 We use numbers per unit effort (NPUE; number per hook) as the measure of effort in the longline survey. Note that the CV reported is actually the relative standard error (RSE), such that
 
-$$CV=RSE=(s/\sqrt{n})/\bar{x}.$$
+<a href="https://www.codecogs.com/eqnedit.php?latex=$$CV=RSE=(s/\sqrt{n})/\bar{x}.$$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?$$CV=RSE=(s/\sqrt{n})/\bar{x}.$$" title="$$CV=RSE=(s/\sqrt{n})/\bar{x}.$$" /></a>
 
 **NOT COMPLETED** - Let me know if and when you want to do this.
 
 The relative population number (RPN) in year $y$ is given by
 
-$$RPN_{y}=\sum_{s=1}^S{NPUE_{s,y}*Area_{s,y}},$$
+<a href="https://www.codecogs.com/eqnedit.php?latex=$$RPN_{y}=\sum_{s=1}^S{NPUE_{s,y}*Area_{s,y}},$$" target="_blank"><img src="https://latex.codecogs.com/gif.latex?$$RPN_{y}=\sum_{s=1}^S{NPUE_{s,y}*Area_{s,y}},$$" title="$$RPN_{y}=\sum_{s=1}^S{NPUE_{s,y}*Area_{s,y}},$$" /></a>
 
 where the product of NPUE in each depth stratum $s$ and the physical area (km^2) of each stratum summed across all strata in the management area. Depth strata (from NMFS): 3 = 201-300 m; 4 = 301-400 m; 5 =401-600 m; 6 =601-800 m; and 7 =801-1,000 m (Sigler 2000).
 
