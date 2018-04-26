@@ -22,7 +22,7 @@ There are currently three "extra" data files for catch:
 
 2.  data/catch/gross_earnings_file/allak_sablecatch_gef_1975_2016_CONFIDENTIAL.csv -- These are all records for sablefish from the GEF, in case Kari wants to use the GEF instead of a combination of AKFIN and GEF. 
 
-3.  data/catch/nsei_historicalsablecatch_nosource_carlile_1907_2000.csv -- An interesting but undocumented time series of catch in Chatham Strait going back to 1907. Published in Carlile 2002 (Regional Information Report No.1 1J02-02) *Used on Google Drive and in figure above*
+3.  data/catch/nsei_historicalsablecatch_nosource_carlile_1907_2000.csv -- An interesting but undocumented time series of catch in Chatham Strait going back to 1907. Published in Carlile et al 2002 (Regional Information Report No.1 1J02-02) *Used on Google Drive and in figure above*
 
 ## Abundance index estimates (or absolute abundance) from survey, mark-recapture, or fishery data, by year, standardized if possible or noted as unstandardized if they aren’t. Biomass and abundance only available for Chatham Strait.
 
