@@ -6,10 +6,23 @@
 
 # Fishery CPUE is in lbs/hook.
 # Survey CPUE is number/hook.
+# Fishery harvest figure.
 
 # Libraries----
 
 library(tidyverse)
+library(data.table)
+
+theme_set(theme_bw(base_size=14)+ 
+            theme(panel.grid.major = element_blank(),
+                  panel.grid.minor = element_blank(),
+                  axis.text.x = element_text(size = 18), # angle = 45, hjust = 1),
+                  axis.text.y = element_text(size = 18),
+                  axis.title.x = element_text(size = 18),
+                  axis.title.y = element_text(size = 18),
+                  strip.text.x = element_text(size = 18),
+                  strip.text.y = element_text(size = 18),
+                  legend.key=element_blank()))
 
 read_csv("data/effort/llsrv_cpue_nsei_ssei_raw.csv",
          guess_max = 500000) -> srv_cpue
@@ -106,3 +119,27 @@ bind_rows(legacy,
 
 bind_rows(srv_sum, fsh_sum) %>% 
   write_csv("data/effort/all_cpue_indices.csv")
+
+
+# Catch
+
+read_csv("data/catch/landings_nseisseicombined_1980_2016_USEME.csv",
+         guess_max = 500000) %>% 
+  select(Year = YEAR, NSEI = NSEI_LANDINGS_ROUNDLBS, SSEI = SSEI_LANDINGS_ROUNDLBS) %>% 
+  gather("Area", "roundlbs", 2:3) -> catch
+  
+read_csv("data/catch/nsei_historicalsablecatch_nosource_carlile_1907_2000.csv",
+         guess_max = 500000)  %>% 
+  filter(YEAR <= 1979) %>% 
+  mutate(Area = "NSEI") %>% 
+  select(Year = YEAR, Area, roundlbs = WHOLE_POUNDS) %>% 
+  bind_rows(catch) -> catch
+
+ggplot(catch, aes(x = Year, y = roundlbs/1000000, 
+                  shape = Area, colour = Area, group = Area)) +
+  geom_point() +
+  geom_line() +
+  labs(y = "Round lbs (in millions)\n") +
+  theme(legend.position = c(0.9, 0.8)) 
+
+ggsave(paste0("fishery_harvest.png"), dpi=300, height=4, width=7.5, units="in")
