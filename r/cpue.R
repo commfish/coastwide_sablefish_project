@@ -2,61 +2,21 @@
 
 # Data request from K. Fenske 2017-12-26
 # Jane Sullivan (jane.sullivan1@alaska.gov)
-# 2018-04-24
+# Last updated 2019-05-31-08
 
 # Fishery CPUE is in lbs/hook.
 # Survey CPUE is number/hook.
 # Fishery harvest figure.
 
-# Libraries----
+# Set-up ----
 
-library(tidyverse)
-library(data.table)
+source("r/helper.r")
 
-windowsFonts(Times=windowsFont("Times New Roman"))
-
-theme_sleek <- function(base_size = 12, base_family = "Times") {
-  half_line <- base_size/2
-  theme_light(base_size = 12, base_family = "Times") +
-    theme(
-      panel.grid.major = element_blank(),
-      panel.grid.minor = element_blank(),
-      axis.ticks.length = unit(half_line / 2.2, "pt"),
-      strip.background = element_rect(fill = NA, colour = NA),
-      strip.text.x = element_text(colour = "black"),
-      strip.text.y = element_text(colour = "black"),
-      panel.border = element_rect(fill = NA),#, colour = "grey70", size = 1),
-      legend.key.size = unit(0.9, "lines"),
-      legend.key = element_rect(colour = NA, fill = NA),
-      legend.background = element_rect(colour = NA, fill = NA)#,
-    )
-}
-
-theme_set(theme_sleek())
-
-# Format ggplot figures with ticked axes (especially good for marking year and
-# age) 
-
-# Depends on dplyr
-tickr <- function(
-  data, # dataframe
-  var, # column of interest
-  to # break point definition 
-){
-  
-  VAR <- enquo(var) # makes VAR a dynamic variable
-  
-  data %>% 
-    distinct(!!VAR) %>%
-    ungroup(!!VAR) %>% 
-    mutate(labels = ifelse(!!VAR %in% seq(to * round(min(!!VAR) / to), max(!!VAR), to),
-                           !!VAR, "")) %>%
-    select(breaks = UQ(VAR), labels)
-}
+YEAR <- 2018 # use to update data files (most recent year of data)
 
 # CPUE ----
 
-read_csv("data/effort/llsrv_cpue_nsei_ssei_raw.csv",
+read_csv(paste0("data/effort/llsrv_cpue_nsei_ssei_raw_1985_", YEAR, ".csv"),
          guess_max = 500000) -> srv_cpue
 
 srv_cpue  %>% 
@@ -132,7 +92,7 @@ rbind(data.frame(Mgmt_area = "NSEI",
                           0.269, 0.219, 0.210, 0.227, 0.171))) -> legacy
 
 # 1997 - present                                   
-read_csv(paste0("data/effort/fishery_cpue_nsei_ssei_CONFIDENTIAL.csv"), 
+read_csv(paste0("data/effort/fishery_cpue_nsei_ssei_CONFIDENTIAL_1997_", YEAR, ".csv"), 
          guess_max = 50000) %>% 
    mutate(std_hooks = 2.2 * no_hooks * (1 - exp(-0.57 * (hook_space / 39.37))), 
          std_cpue = sable_lbs_set / std_hooks) -> fsh_cpue
@@ -151,30 +111,3 @@ bind_rows(legacy,
 
 bind_rows(srv_sum, fsh_sum) %>% 
   write_csv("data/effort/all_cpue_indices.csv")
-
-
-# Catch ----
-
-read_csv("data/catch/landings_nseisseicombined_1980_2016_USEME.csv",
-         guess_max = 500000) %>% 
-  select(Year = YEAR, NSEI = NSEI_LANDINGS_ROUNDLBS, SSEI = SSEI_LANDINGS_ROUNDLBS) %>% 
-  gather("Area", "roundlbs", 2:3) -> catch
-  
-read_csv("data/catch/nsei_historicalsablecatch_nosource_carlile_1907_2000.csv",
-         guess_max = 500000)  %>% 
-  filter(YEAR <= 1979) %>% 
-  mutate(Area = "NSEI") %>% 
-  select(Year = YEAR, Area, roundlbs = WHOLE_POUNDS) %>% 
-  bind_rows(catch) -> catch
-
-axis <- tickr(catch, Year, 10)
-ggplot(catch, aes(x = Year, y = roundlbs/1000000, 
-                  shape = Area, colour = Area, group = Area)) +
-  geom_point() +
-  geom_line() +
-  scale_colour_grey() + 
-  scale_x_continuous(breaks = axis$breaks, labels = axis$labels) +
-  labs(x = "\nYear", y = "Harvest (million round lb)\n") +
-  theme(legend.position = c(0.9, 0.8)) 
-
-ggsave(paste0("fishery_harvest.jpg"), dpi=300, height=3.5, width=5, units="in")

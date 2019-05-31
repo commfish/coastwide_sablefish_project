@@ -1,43 +1,39 @@
 # Query and data cleaning file
+
 # Data request from K. Fenske 2017-12-26
 # Jane Sullivan (jane.sullivan1@alaska.gov)
-# 2018-01-08
+# Last updated 2019-05-31-08
 
-# Libraries and ggplot theme ----
+# Set-up ----
 
-library(ROracle)
-library(tidyverse)
-library(mosaic)
-library(lubridate)
+source("r/helper.r")
 
-theme_set(theme_bw(base_size = 12) + 
-            theme(panel.grid.major = element_blank(),
-                  panel.grid.minor = element_blank(),
-                  axis.text.x=element_text(angle = 45, hjust = 1)))
+YEAR <- 2018 # use to update data files (most recent year of data)
 
 # Oracle connections ----
 
 # Database usernames and passwords (this file and file path are user-specific)
-ora <- read_csv("~/my_oracle/database.csv") 
+ora <- read_csv("my_oracle/database.csv") 
 
 # Connection strings in T:/Toolbox/TNS/tnsnames.ora
 
 # IFDB aka ALEX. Region I database, ultimately will be replaced by Zander
 ifdb <- "(DESCRIPTION =
-(ADDRESS = (PROTOCOL = TCP)(HOST = db-ifdb.dfg.alaska.local)(PORT = 1521))
+(ADDRESS = (PROTOCOL = TCP)(HOST = 10.209.0.83)(PORT = 1521))
 (CONNECT_DATA = (SERVER = DEDICATED)
-(SERVICE_NAME = ifdb.dfg.alaska.local)))"
+(SERVICE_NAME = DFGCFR1P.500040564.us1.internal)))"
 
 ifdb_channel <- dbConnect(drv = dbDriver('Oracle'), 
                           username = ora$ifdb_user, 
                           password = ora$ifdb_pw, 
                           dbname = ifdb)
 
-# Zander. Region I database
+# Zander. Region I database (update 2019-05-31: Zander and IFDB have merged into
+# the same db, but are in separate schemas. Queries haven't changed.
 zprod <- "(DESCRIPTION =
-(ADDRESS = (PROTOCOL = TCP)(HOST = db-zprod.dfg.alaska.local)(PORT = 1521))
+(ADDRESS = (PROTOCOL = TCP)(HOST = 10.209.0.83)(PORT = 1521))
 (CONNECT_DATA = (SERVER = DEDICATED)
-(SERVICE_NAME = zprod.dfg.alaska.local)))"
+(SERVICE_NAME = DFGCFR1P.500040564.us1.internal)))"
 
 zprod_channel <- dbConnect(drv = dbDriver('Oracle'), 
                            username = ora$zprod_user, 
@@ -46,16 +42,43 @@ zprod_channel <- dbConnect(drv = dbDriver('Oracle'),
 
 # Data warehouse. eLandings, fish tickets, GEF
 dwprod <- "(DESCRIPTION =
-(ADDRESS = (PROTOCOL = TCP)(HOST = db-dwprod.dfg.alaska.local)(PORT = 1521))
+(ADDRESS = (PROTOCOL = TCP)(HOST = 10.209.2.34)(PORT = 1521))
 (CONNECT_DATA = (SERVER = DEDICATED)
-(SERVICE_NAME = dwprod.dfg.alaska.local)))"
+(SERVICE_NAME = DFGDWP.us1.ocm.s7134325.oraclecloudatcustomer.com)))"
 
 dwprod_channel <- dbConnect(drv = dbDriver('Oracle'), 
                             username = ora$dwprod_user, 
                             password = ora$dwprod_pw, 
                             dbname = dwprod)
 
-# Fishery removals ----
+# IFDB fishery removals ----
+
+# Harvest from IFDB (the Region 1 SEAK database). This source is what managers
+# are using and what I've used for the NSEI stock assessments.  Landings
+# are always entered as POUNDS and then converted to ROUND_POUNDS using a
+# conversion factor related to the disposition code. Prior to 1985 there was no
+# disposition code for landings, which is why ROUND_POUNDS is not populated
+# prior to 1985. Here we assume fish were delivered whole prior to 1985, because
+# that's the best we have.
+
+query <-
+  " select  year, adfg_no, trip_no, vessel_name, port_code, gear,
+         catch_date, sell_date, harvest_code, harvest, g_stat_area,
+         g_management_area_code, species_code, pounds, round_pounds,
+         delivery_code, g_cfec_fishery_group, g_cfec_fishery
+    from    out_g_cat_ticket
+    where   species_code = '710' and g_management_area_code in ('NSEI','SSEI') "
+
+dbGetQuery(ifdb_channel, query) %>% 
+  rename(Mgmt_area = G_MANAGEMENT_AREA_CODE) %>% 
+  mutate(ROUND_POUNDS = ifelse(ROUND_POUNDS == 0, POUNDS, ROUND_POUNDS)) -> ifdb_catch
+
+write_csv(ifdb_catch, paste0("data/catch/region1_ifdb/region1_sablecatch_", 
+                      min(ifdb_catch$YEAR), "_", max(ifdb_catch$YEAR), "_CONFIDENTIAL.csv"))
+
+ifdb_catch %>% group_by(YEAR, Mgmt_area) %>% summarise(sum(ROUND_POUNDS)) %>% View()
+
+# GEF fishery removals ----
 
 # gef = gross earnings file. This was pitched to me by J. Shriver as the
 # definitive source for historical landings records. The detailed file includes
@@ -78,6 +101,10 @@ query <-
 
 system.time(dbGetQuery(dwprod_channel, query) -> gef ) 
 
+gef %>% mutate(YEAR = as.numeric(YEAR)) -> gef
+
+# gef %>% group_by(YEAR) %>% summarize(n()) %>% View()
+
 # Stat area information by database type (includes additional info like state vs
 # fed waters, effective dates for stat area codes, ADFG/NMFS mgt areas, etc.)
 query <- 
@@ -92,7 +119,7 @@ merge(gef, stat_areas, by = c("STAT_AREA", "STAT_AREA_TYPE")) -> gef
 # Full gef in case it becomes of interest for use in the project later. There's
 # an Excel file with detailed variable descriptions in the gross earning file
 # folder
-write_csv(gef, "data/catch/gross_earnings_file/allak_sablecatch_gef_1975_2016_CONFIDENTIAL.csv")
+write_csv(gef, paste0("data/catch/gross_earnings_file/allak_sablecatch_gef_", min(gef$YEAR), "_", max(gef$YEAR), "_CONFIDENTIAL.csv"))
 
 # Pers. comm. with K. Fenske 2019-01-03 indicates that she's already obtained
 # Aluetian Is. data and only needs state data for NSEI, SSEI, and PWS (I include
@@ -133,59 +160,148 @@ gef %>%
     WHOLE_POUNDS = ifelse(WHOLE_POUNDS == 0, POUNDS, WHOLE_POUNDS),
     # Lump all PWS areas into one for clarity. Lookup table in
     # adfg_mgt_area_metadata_slarsen.shp, search under G_SEL_AREA
-    Mgt_area = derivedFactor("PWS" = G_MGT_AREA_DISTRICT %in% 
+    Mgmt_area = derivedFactor("PWS" = G_MGT_AREA_DISTRICT %in% 
                                     c("PWS", "PWSE", "PWSI", "PWSI", "PWSW"),
-                                  "NSEI" = G_MGT_AREA_DISTRICT == "NSEI",
-                                  "SSEI" = G_MGT_AREA_DISTRICT == "SSEI", 
-                                  "LOWCI" = G_MGT_AREA_DISTRICT == "LOWCI"),
-    # Aggregate gear field codes (lookup table in GEF_Variable_Descriptions....xls)
+                             "NSEI" = G_MGT_AREA_DISTRICT == "NSEI",
+                             "SSEI" = G_MGT_AREA_DISTRICT == "SSEI", 
+                             "LOWCI" = G_MGT_AREA_DISTRICT == "LOWCI"),
+    # Aggregate gear field codes (lookup table in  GEF_Variable_Descriptions....xls)
     GEAR_CODE = derivedFactor("HAL" = GEAR_CODE %in% c("61", "06"), #hook-and-line aka longline
                               "POT" = GEAR_CODE %in% c("91", "09"),
                               "TRW" = GEAR_CODE %in% c("07", "47", "27", "17"), # non-pelagic/bottom trawl, pelagic/mid-water trawl, otter trawl, or beam trawl
-                              "JIG" = GEAR_CODE %in% c("26"), # mechanical jigs
-                              "TRL" = GEAR_CODE %in% c("05", "25", "15"), # hand troll, dinglebar troll
+                              "JIG/TRL" = GEAR_CODE %in% c("26", "05", "25", "15"), # mechanical jigs, power troll, hand troll, dinglebar troll
                               "GNT" = GEAR_CODE %in% c("03", "04", "41"), # set, drift, or sunken gillnet
                               "UNK" = GEAR_CODE %in% c("99"))) %>% # unknown
   # Per request: catch by gear and adfg mangament area
-  group_by(YEAR, Mgt_area, GEAR_CODE) %>% 
+  group_by(YEAR, Mgmt_area, GEAR_CODE) %>% 
   summarise(WHOLE_POUNDS = sum(WHOLE_POUNDS)) %>%
   ungroup() %>% 
-  complete(YEAR, Mgt_area, GEAR_CODE,
+  complete(YEAR, Mgmt_area, GEAR_CODE,
            fill = list(WHOLE_POUNDS = 0)) %>%
-  write_csv("data/catch/gross_earnings_file/regions1n2_statewater_sablecatch_gef_1975_2016.csv") ->
-  state_reg1n2
+  write_csv(paste0("data/catch/gross_earnings_file/regions1n2_statewater_sablecatch_gef_", 
+                   min(gef$YEAR), "_", max(gef$YEAR), ".csv")) -> state_reg1n2
 
 ggplot(state_reg1n2 %>%
          droplevels()) +
   geom_line(aes(as.numeric(YEAR), WHOLE_POUNDS, 
-                colour = Mgt_area, group = Mgt_area), size = 1) +
+                colour = Mgmt_area, group = Mgmt_area), size = 1) +
   facet_wrap(~ GEAR_CODE, scales = "free") +
   scale_x_continuous(breaks = c(seq(min(state_reg1n2$YEAR), max(state_reg1n2$YEAR), 5))) 
   
+# Historical fishery removals ----
+
 # I found a file with historical catches going from 1907-2000 in a folder from
 # D. Carlile to S. Dressel. I include it for comparison but would not recommend
 # using it for anything until it's been vetted (and I don't know if that's possible). 
 
 read_csv("data/catch/nsei_historicalsablecatch_nosource_carlile_1907_2000.csv") %>% 
-  mutate(data_source = "Historical (unknown)") -> nsei_historical
+  mutate(data_source = "Historical (Carlile et al. 2002)",
+         Mgmt_area = "NSEI") -> historical
+
+# Compare fishery removals ----
 
 state_reg1n2 %>% 
-  filter(Mgt_area == "NSEI") %>% 
-  select(-Mgt_area) %>% 
-  group_by(YEAR) %>% 
+  group_by(Mgmt_area, YEAR) %>% 
   summarise(WHOLE_POUNDS = sum(WHOLE_POUNDS)) %>%
-  mutate(data_source = "Gross Earnings File") -> nsei_modern
+  mutate(data_source = "Gross Earnings File") -> gef_sum
 
-rbind(nsei_historical,  nsei_modern) %>% 
-  arrange(YEAR, data_source) %>%  
-  mutate(thous_lbs = WHOLE_POUNDS/1000) -> nsei
+ifdb_catch %>% 
+  group_by(Mgmt_area, YEAR) %>% 
+  summarise(WHOLE_POUNDS = sum(ROUND_POUNDS)) %>%
+  mutate(data_source = "IFDB (Region I fish ticket database)") -> ifdb_sum
 
-ggplot(nsei) + 
-  geom_line(aes(as.numeric(YEAR), thous_lbs, 
-                colour = data_source, group = data_source), size = 1) +
-  scale_x_continuous(breaks = c(seq(min(nsei$YEAR), max(nsei$YEAR), 5))) +
-  labs(x = " ", y = "Round Weight (1000 lbs)", 
-       title = "Harvest in NSEI (Chatham Strait)")
+bind_rows(historical,  filter(gef_sum, Mgmt_area %in% c("NSEI", "SSEI")), ifdb_sum) %>% 
+  arrange(Mgmt_area, YEAR, data_source) %>%  
+  # convert to metric tons
+  mutate(whole_mt = WHOLE_POUNDS * 0.000453592) %>% 
+  select(year = YEAR, Mgmt_area, whole_mt, data_source) -> compare_catch
+
+axis <- tickr(compare_catch, year, 5)
+
+ggplot(compare_catch) + 
+  geom_rect(aes(xmin = 1975, xmax = 1985, ymin = -Inf, ymax = Inf), 
+            fill = "grey95", colour = NA, alpha = 0.9, show.legend = FALSE) +
+  geom_line(aes(as.numeric(year), whole_mt, 
+                colour = data_source, linetype = data_source, group = data_source), size = 1) +
+  scale_x_continuous(breaks = axis$breaks, labels = axis$labels) +
+  scale_colour_grey() +
+  facet_wrap(~Mgmt_area, ncol = 1, scales = "free_y") +
+  labs(x = "Year", y = "Total catch (round mt)", 
+       colour = "Data source", linetype = "Data source",
+       title = "Comparison of landings in NSEI and SSEI by data source") +
+  theme(legend.position = "top") 
+
+ggsave(paste0("catch_comparison_", min(compare_catch$year), "_", max(compare_catch$year), ".png"), dpi=300,  height=6, width=8,  units="in")
+
+write_csv(compare_catch, paste0("data/catch/catch_comparison_summary_", min(compare_catch$year), "_", max(compare_catch$year), ".csv"))
+
+state_reg1n2 %>%
+  rename(GEAR = GEAR_CODE) %>% 
+  filter(Mgmt_area == "NSEI" & YEAR %in% c(1975:1985)) %>% 
+  group_by(YEAR, GEAR) %>% 
+  summarise(WHOLE_POUNDS = sum(WHOLE_POUNDS)) %>% 
+  mutate(data_source = "Gross Earnings File") %>% 
+  bind_rows(ifdb_catch %>%
+              select(YEAR, Mgmt_area, GEAR, WHOLE_POUNDS = ROUND_POUNDS) %>% 
+              filter(Mgmt_area == "NSEI" & YEAR %in% c(1975:1985)) %>% 
+              mutate(data_source = "IFDB (Region I fish ticket database)",
+                     GEAR = derivedFactor(
+                       "HAL" = GEAR %in% c("Longline-keel < 60 ft.", "Longline"), #hook-and-line aka longline
+                       "POT" = GEAR %in% c("Pot"),
+                       "TRW" = GEAR %in% c("Beam Trawl"),
+                       "JIG/TRL" = GEAR %in% c("Power Troll", "Hand Line/Jig/Troll"), # all jigs and troll gear
+                       "UNK" = GEAR %in% c("Other/Unknown/Missing"))) %>% 
+              group_by(YEAR, GEAR) %>% 
+              summarise(WHOLE_POUNDS = sum(WHOLE_POUNDS)) %>% 
+              mutate(data_source = "IFDB (Region I fish ticket database)")) %>% 
+  mutate(whole_mt = WHOLE_POUNDS * 0.000453592) %>% 
+  select(-WHOLE_POUNDS) -> discrepancy
+
+axis <- tickr(discrepancy, YEAR, 2)
+ggplot(discrepancy) + 
+ geom_line(aes(as.numeric(YEAR), whole_mt, 
+                colour = data_source, linetype = data_source, group = data_source), 
+           size = 1) +
+  scale_x_continuous(breaks = axis$breaks, labels = axis$labels) +
+  scale_colour_grey() +
+  facet_wrap(~GEAR, ncol = 1, scales = "free_y") +
+  labs(x = "Year", y = "Total catch (round mt)", 
+       colour = "Data source", linetype = "Data source",
+       title = "Comparison of NSEI landings by gear and data source") +
+  theme(legend.position = "top") 
+
+# Final summary of fishery removals ----
+
+# B. Williams, J. Sullivan, and S. Larsen reviewed the available landings data
+# 2019-05-31. Because of the discrepancies in GEF and IFDB between 1975 and 1984
+# (see catch_comparison_summary_1907_2018.csv), we decided for NSEI to use the
+# Carlile et al. 2002 historical catch time series from 1907-1984 and GEF
+# 1985-present. For SSEI, we use GEF for 1975-present. Also use GEF for PWS.
+
+gef_sum %>%
+  filter(Mgmt_area == "PWS") %>% 
+  mutate(whole_mt = WHOLE_POUNDS * 0.000453592) %>% 
+  select(year = YEAR, Mgmt_area, whole_mt, data_source) %>% 
+  bind_rows(compare_catch) -> final_catch
+
+final_catch %>% 
+  filter( (Mgmt_area == "NSEI" & year <= 1984 & data_source == "Historical (Carlile et al. 2002)") | 
+            (Mgmt_area == "NSEI" & year >= 1985 & data_source == "Gross Earnings File") |
+            (Mgmt_area == "SSEI" & data_source == "Gross Earnings File") |
+            (Mgmt_area == "PWS") ) -> final_catch
+
+write_csv(final_catch, paste0("data/catch/catch_nsei_ssei_pws_1907_", YEAR, "_USEME.csv"))
+
+axis <- tickr(final_catch, year, 10)
+ggplot(final_catch, aes(x = year, y = whole_mt, 
+                        colour = Mgmt_area, linetype = Mgmt_area, group = Mgmt_area)) +
+  geom_line() +
+  scale_colour_grey() +
+  scale_x_continuous(breaks = axis$breaks, labels = axis$labels) +
+  labs(x = "\nYear", y = "Total catch (round mt)\n", linetype = NULL, colour = NULL) +
+  theme(legend.position = c(0.9, 0.8)) 
+
+ggsave(paste0("total_catch_1907_", YEAR, ".png"), dpi=300, height=3.5, width=5, units="in")
 
 # Fishery biological data ----
 
@@ -237,8 +353,9 @@ dbGetQuery(ifdb_channel, query) %>%
          Spp_cde = SPECIES_CODE, length = LENGTH, weight = WEIGHT,
          age = AGE, Sex, Maturity)  %>% 
   # Omit two records that look like errors
-  filter(! c(length < 20 | length > 120)) %>% 
-  write_csv("data/biological/fishery/detailed_fisherybio_nsei_ssei_1988_2017.csv") 
+  filter(! c(length < 20 | length > 120)) -> fsh_bio
+
+write_csv(fsh_bio, paste0("data/biological/fishery/detailed_fisherybio_nsei_ssei_", min(fsh_bio$year), "_", max(fsh_bio$year), ".csv")) 
 
 # Pot survey biological data ----
 
@@ -267,8 +384,11 @@ dbGetQuery(ifdb_channel, query) %>%
          Gear = "Pot",
          Source = "Survey") %>% 
   select(year = YEAR, Gear, Source, Mgmt_area = MANAGEMENT_AREA, 
-         Spp_cde = SPECIES_CODE, length = LENGTH, weight = WEIGHT, age = AGE, Sex, Maturity)  %>% 
-  write_csv("data/biological/survey/detailed_potsrvbio_nsei_ssei_1979_2017.csv")
+         Spp_cde = SPECIES_CODE, length = LENGTH, weight = WEIGHT, age = AGE, Sex, Maturity) -> pot_bio
+
+pot_bio %>% group_by(year, Mgmt_area) %>% summarise(n()) %>% View()
+
+write_csv(pot_bio, paste0("data/biological/survey/detailed_potsrvbio_nsei_ssei_", min(pot_bio$year), "_", max(pot_bio$year), ".csv"))
 
 # Longline survey biological data ----
 
@@ -304,8 +424,9 @@ merge(srv_bio, stat_areas, by = "STAT") %>%
          Gear = "Longline",
          Source = "Survey") %>% 
   select(year = YEAR, Gear, Source, Mgmt_area = G_MANAGEMENT_AREA_CODE, 
-         Spp_cde = SPECIES_CODE, length = LENGTH, weight = WEIGHT, age = AGE, Sex, Maturity)  %>% 
-  write_csv("data/biological/survey/detailed_llsrvbio_nsei_ssei_1985_2017.csv")
+         Spp_cde = SPECIES_CODE, length = LENGTH, weight = WEIGHT, age = AGE, Sex, Maturity) -> srv_bio
+
+write_csv(srv_bio, paste0("data/biological/survey/detailed_llsrvbio_nsei_ssei_", min(srv_bio$year), "_", max(srv_bio$year), ".csv"))
 
 # Fishery CPUE/logbook ----
 
@@ -338,7 +459,7 @@ where   project_code in ('603', '03', '601', '01')"
 dbGetQuery(zprod_channel, query) -> srv_eff
 
 srv_eff %>% 
-  filter(YEAR < 2018) %>% #the programmers have some dummy data in the db for the upcoming year
+  filter(YEAR < max(YEAR)) %>% #the programmers have some dummy data in the db for the upcoming year
   mutate(date = ymd(as.Date(TIME_FIRST_BUOY_ONBOARD)), #ISO 8601 format
          julian_day = yday(date)) %>% 
   select(year = YEAR, Project_cde = PROJECT_CODE, Station_no = STATION_NO,
@@ -356,7 +477,7 @@ srv_eff %>%
              min_yr = min(year),
              max_yr = max(year))
 
-write_csv(srv_eff, paste0("data/effort/llsrv_cpue_nsei_ssei_raw.csv"))
+write_csv(srv_eff, paste0("data/effort/llsrv_cpue_nsei_ssei_raw_", min(srv_eff$year), "_", max(srv_eff$year), ".csv"))
 
 # Fishery cpue ----
 
@@ -408,4 +529,4 @@ fsh_eff %>%
             min_yr = min(year),
             max_yr = max(year))
 
-write_csv(fsh_eff, paste0("data/effort/fishery_cpue_nsei_ssei_CONFIDENTIAL.csv"))
+write_csv(fsh_eff, paste0("data/effort/fishery_cpue_nsei_ssei_CONFIDENTIAL_", min(fsh_eff$year), "_", max(fsh_eff$year), ".csv"))

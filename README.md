@@ -4,25 +4,28 @@ Queries, data prep, and analysis for ADFG data requested by K. Fenske. 2017-12-2
 
 All queries and data prep can be found in r/query_n_clean.r. 
 
-## Catch by gear and ADFG management area, 1960-present, or other dates (going back in time) as available. 
+## Total catch 
 
-**Update 2018-04-24: I've struggled getting the IFDB database and Gross Earnings File to match up to agency reports. I've uploaded a new harvest file called data/catch/landings_nseisseicombined_1980_2016_USEME.csv. These numbers come straight from ADFG Annual Harvest Objective Memos. Because they're the only values that have been published, I want to use them until I can thoroughly review the other data sources. They represent reported landings in round lbs in the NSEI from 1980-2016 and SSEI from 1985-2016. I left 1907-1979 with Dave Carlile's historical catch reconstruction, but these numbers are for NSEI only.**
+Pers. comm. with K. Fenske 2018-01-03: she already has Aluetian Is. data from AKFIN and only needs state catch data for NSEI, SSEI, and PWS. 
 
-Pers. comm. with K. Fenske 2018-01-03: she already has Aluetian Is. data from AKFIN and only needs state data for NSEI, SSEI, and PWS. 
+**Update 2019-05-31:** J. Sullivan, B. Williams, and S. Larsen reviewed the available catch sources, including the IFDB Region I fish ticket database and the Gross Earnings File. Because of the discrepancies in Gross Earnings File (GEF) and IFDB in NSEI between 1975 and 1984
+(see data/catch/catch_comparison_summary_1907_2018.csv), we decided to use the
+Carlile et al. 2002 historical catch time series from 1907-1984 and GEF
+1985-present for NSEI (Region I, Chatham Strait). For SSEI (Region I, Clarence Strait) and  PWS (Region II, Prince William Sound), we used GEF for 1975-present. 
 
-Reserve for later use:
+Column descriptions for GEF are in data/catch/gross_earnings_file/GEF_Variable_Descriptions_Working_JShriver_2014_12_08.xlsx. Descriptions for ADFG management areas can be found in adfg_mgt_area_metadata_slarsen.shp. S. Larsen also helped me update some of the stat area NAs in Region 1 and 2, source file data/catch/gross_earnings_file/SJL_region2_statareas_districts
 
-I suggested using the Gross Earnings File (GEF) as the definitive source for statewide catch reconstructions based on the recommendation of J. Shriver. Column descriptions for GEF in data/catch/gross_earnings_file/GEF_Variable_Descriptions_Working_JShriver_2014_12_08.xlsx. Descriptions for ADFG management areas can be found in adfg_mgt_area_metadata_slarsen.shp. S. Larsen also helped me update some of the stat area NAs in Region 1 and 2, source file data/catch/gross_earnings_file/SJL_region2_statareas_districts
+![alt text](https://github.com/commfish/coastwide_sablefish_project/blob/master/total_catch_1907_2018.png)
 
-![alt text](https://github.com/commfish/coastwide_sablefish_project/blob/master/fishery_harvest.png)
+There are currently four "extra" data files for catch:
 
-There are currently three "extra" data files for catch:
+1.  data/catch/gross_earnings_file/regions1n2_statewater_sablecatch_gef_1975_2018.csv -- Just catch in statewaters in Regions 1 and 2, which include the follow management areas: Northern Southeast Inside (NSEI), Southern Southeast Inside (SSEI), Prince William Sound (PWS), and Cook Inlet (CI).
 
-1.  data/catch/gross_earnings_file/regions1n2_statewater_sablecatch_gef_1975_2016.csv -- Just catch in statewaters in Regions 1 and 2, which include the follow management areas: Northern Southeast Inside (NSEI), Southern Southeast Inside (SSEI), Prince William Sound (PWS), and Cook Inlet (CI).
+2.  data/catch/gross_earnings_file/allak_sablecatch_gef_1975_2018_CONFIDENTIAL.csv -- These are all records for sablefish from the GEF, in case Kari wants to use the GEF instead of a combination of AKFIN and GEF. 
 
-2.  data/catch/gross_earnings_file/allak_sablecatch_gef_1975_2016_CONFIDENTIAL.csv -- These are all records for sablefish from the GEF, in case Kari wants to use the GEF instead of a combination of AKFIN and GEF. 
+3.  data/catch/region1_ifdb/region1_sablecatch_1969_2018_CONFIDENTIAL.csv -- These are from the Region I fish ticket database. It's used for annual management reports and the stock assessment. These data have high agreement with GEF from 1985-present in NSEI and SSEI.
 
-3.  data/catch/nsei_historicalsablecatch_nosource_carlile_1907_2000.csv -- An interesting but undocumented time series of catch in Chatham Strait going back to 1907. Published in Carlile et al 2002 (Regional Information Report No.1 1J02-02) *Used on Google Drive and in figure above*
+4.  data/catch/nsei_historicalsablecatch_nosource_carlile_1907_2000.csv -- An interesting but undocumented time series of catch in Chatham Strait going back to 1907. Published in Carlile et al 2002 (Regional Information Report No.1 1J02-02) *Used on Google Drive and in figure above*
 
 ## Abundance index estimates (or absolute abundance) from survey, mark-recapture, or fishery data, by year, standardized if possible or noted as unstandardized if they aren’t. Biomass and abundance only available for Chatham Strait.
 

@@ -1,0 +1,201 @@
+year,Mgmt_area,whole_mt,data_source
+1975,PWS,0,Gross Earnings File
+1976,PWS,0,Gross Earnings File
+1977,PWS,0,Gross Earnings File
+1978,PWS,0.22452804,Gross Earnings File
+1979,PWS,0.919884576,Gross Earnings File
+1980,PWS,8.412317232,Gross Earnings File
+1981,PWS,0.658615584,Gross Earnings File
+1982,PWS,2.274310288,Gross Earnings File
+1983,PWS,6.092647744,Gross Earnings File
+1984,PWS,93.577843968,Gross Earnings File
+1985,PWS,229.926238392,Gross Earnings File
+1986,PWS,115.122556784,Gross Earnings File
+1987,PWS,91.155662688,Gross Earnings File
+1988,PWS,112.208681776,Gross Earnings File
+1989,PWS,85.843646776,Gross Earnings File
+1990,PWS,98.300643872,Gross Earnings File
+1991,PWS,159.051127616,Gross Earnings File
+1992,PWS,211.31490504,Gross Earnings File
+1993,PWS,177.608029928,Gross Earnings File
+1994,PWS,154.70208752,Gross Earnings File
+1995,PWS,261.868640624,Gross Earnings File
+1996,PWS,132.172626472,Gross Earnings File
+1997,PWS,94.515418632,Gross Earnings File
+1998,PWS,110.989880072,Gross Earnings File
+1999,PWS,97.028771904,Gross Earnings File
+2e3,PWS,161.710991104,Gross Earnings File
+2001,PWS,146.92298472,Gross Earnings File
+2002,PWS,149.44132750400001,Gross Earnings File
+2003,PWS,101.719820368,Gross Earnings File
+2004,PWS,107.03864016,Gross Earnings File
+2005,PWS,103.849434808,Gross Earnings File
+2006,PWS,89.179815936,Gross Earnings File
+2007,PWS,90.452595088,Gross Earnings File
+2008,PWS,94.02735364,Gross Earnings File
+2009,PWS,99.782528936,Gross Earnings File
+2010,PWS,96.711257504,Gross Earnings File
+2011,PWS,101.451293904,Gross Earnings File
+2012,PWS,92.806737568,Gross Earnings File
+2013,PWS,70.703653,Gross Earnings File
+2014,PWS,44.01203176,Gross Earnings File
+2015,PWS,7.734197192,Gross Earnings File
+2016,PWS,18.492492248,Gross Earnings File
+2017,PWS,33.228789144,Gross Earnings File
+2018,PWS,40.086646592,Gross Earnings File
+1907,NSEI,33.8394031731632,Historical (Carlile et al. 2002)
+1908,NSEI,18.71966984134184,Historical (Carlile et al. 2002)
+1909,NSEI,31.679441269265276,Historical (Carlile et al. 2002)
+1910,NSEI,82.79853966454,Historical (Carlile et al. 2002)
+1911,NSEI,80.6385777878576,Historical (Carlile et al. 2002)
+1912,NSEI,12.23978412511216,Historical (Carlile et al. 2002)
+1913,NSEI,40.31928888939288,Historical (Carlile et al. 2002)
+1914,NSEI,64.0788698549496,Historical (Carlile et al. 2002)
+1915,NSEI,109.4380698549496,Historical (Carlile et al. 2002)
+1916,NSEI,239.75577144153118,Historical (Carlile et al. 2002)
+1917,NSEI,759.5866033546,Historical (Carlile et al. 2002)
+1918,NSEI,976.302780779584,Historical (Carlile et al. 2002)
+1919,NSEI,366.47353649137676,Historical (Carlile et al. 2002)
+1920,NSEI,421.1925714415312,Historical (Carlile et al. 2002)
+1921,NSEI,282.9550095194896,Historical (Carlile et al. 2002)
+1922,NSEI,35.279377778785765,Historical (Carlile et al. 2002)
+1923,NSEI,611.989206255608,Historical (Carlile et al. 2002)
+1924,NSEI,163.4371174523976,Historical (Carlile et al. 2002)
+1925,NSEI,772.5463745239759,Historical (Carlile et al. 2002)
+1926,NSEI,494.63127597448,Historical (Carlile et al. 2002)
+1927,NSEI,979.90271731632,Historical (Carlile et al. 2002)
+1928,NSEI,192.9565968268368,Historical (Carlile et al. 2002)
+1929,NSEI,340.55399365367356,Historical (Carlile et al. 2002)
+1930,NSEI,325.43426033546,Historical (Carlile et al. 2002)
+1931,NSEI,200.8764571622968,Historical (Carlile et al. 2002)
+1932,NSEI,60.781328,Historical (Carlile et al. 2002)
+1933,NSEI,74.15869206709199,Historical (Carlile et al. 2002)
+1934,NSEI,132.011601312,Historical (Carlile et al. 2002)
+1935,NSEI,320.77663366400003,Historical (Carlile et al. 2002)
+1936,NSEI,455.677616016,Historical (Carlile et al. 2002)
+1937,NSEI,975.970319616,Historical (Carlile et al. 2002)
+1938,NSEI,391.45443192,Historical (Carlile et al. 2002)
+1939,NSEI,804.87178848,Historical (Carlile et al. 2002)
+1940,NSEI,1075.71157168,Historical (Carlile et al. 2002)
+1941,NSEI,1316.606571816,Historical (Carlile et al. 2002)
+1942,NSEI,2947.6222528,Historical (Carlile et al. 2002)
+1943,NSEI,2375.06214304,Historical (Carlile et al. 2002)
+1944,NSEI,2184.05455184,Historical (Carlile et al. 2002)
+1945,NSEI,1992.460012592,Historical (Carlile et al. 2002)
+1946,NSEI,1530.013896752,Historical (Carlile et al. 2002)
+1947,NSEI,2968.939262432,Historical (Carlile et al. 2002)
+1948,NSEI,658.695416192,Historical (Carlile et al. 2002)
+1949,NSEI,670.761870576,Historical (Carlile et al. 2002)
+1950,NSEI,197.96342452,Historical (Carlile et al. 2002)
+1951,NSEI,801.84179392,Historical (Carlile et al. 2002)
+1952,NSEI,490.9679808,Historical (Carlile et al. 2002)
+1953,NSEI,1271.02375096,Historical (Carlile et al. 2002)
+1954,NSEI,752.839342976,Historical (Carlile et al. 2002)
+1955,NSEI,733.4278733360001,Historical (Carlile et al. 2002)
+1956,NSEI,688.530429992,Historical (Carlile et al. 2002)
+1957,NSEI,804.739339616,Historical (Carlile et al. 2002)
+1958,NSEI,363.480506096,Historical (Carlile et al. 2002)
+1959,NSEI,536.412909688,Historical (Carlile et al. 2002)
+1960,NSEI,1055.7800193494961,Historical (Carlile et al. 2002)
+1961,NSEI,494.667275757152,Historical (Carlile et al. 2002)
+1962,NSEI,379.21731173163204,Historical (Carlile et al. 2002)
+1963,NSEI,319.199890265816,Historical (Carlile et al. 2002)
+1964,NSEI,319.81043952204163,Historical (Carlile et al. 2002)
+1965,NSEI,884.9932714785759,Historical (Carlile et al. 2002)
+1966,NSEI,496.4550038454,Historical (Carlile et al. 2002)
+1967,NSEI,343.3756238792344,Historical (Carlile et al. 2002)
+1968,NSEI,170.1337193610208,Historical (Carlile et al. 2002)
+1969,NSEI,248.9363295060712,Historical (Carlile et al. 2002)
+1970,NSEI,303.3623296,Historical (Carlile et al. 2002)
+1971,NSEI,226.4208866281128,Historical (Carlile et al. 2002)
+1972,NSEI,784.174169610208,Historical (Carlile et al. 2002)
+1973,NSEI,704.143981073472,Historical (Carlile et al. 2002)
+1974,NSEI,587.3159614607121,Historical (Carlile et al. 2002)
+1975,NSEI,708.596382539288,Historical (Carlile et al. 2002)
+1976,NSEI,698.61303852908,Historical (Carlile et al. 2002)
+1977,NSEI,402.49522121597045,Historical (Carlile et al. 2002)
+1978,NSEI,567.72654722552,Historical (Carlile et al. 2002)
+1979,NSEI,857.267280402552,Historical (Carlile et al. 2002)
+1980,NSEI,622.874694405104,Historical (Carlile et al. 2002)
+1981,NSEI,480.870879091336,Historical (Carlile et al. 2002)
+1982,NSEI,562.648476377032,Historical (Carlile et al. 2002)
+1983,NSEI,839.843587891336,Historical (Carlile et al. 2002)
+1984,NSEI,808.432701589792,Historical (Carlile et al. 2002)
+1985,NSEI,1405.074701904,Gross Earnings File
+1986,NSEI,1895.812257968,Gross Earnings File
+1987,NSEI,1792.032222736,Gross Earnings File
+1988,NSEI,1927.213978536,Gross Earnings File
+1989,NSEI,1718.51947448,Gross Earnings File
+1990,NSEI,1517.48523212,Gross Earnings File
+1991,NSEI,1809.02468624,Gross Earnings File
+1992,NSEI,1961.559057592,Gross Earnings File
+1993,NSEI,2646.012149096,Gross Earnings File
+1994,NSEI,2151.453534024,Gross Earnings File
+1995,NSEI,2084.915669952,Gross Earnings File
+1996,NSEI,2146.897202384,Gross Earnings File
+1997,NSEI,2178.760679608,Gross Earnings File
+1998,NSEI,2163.474175616,Gross Earnings File
+1999,NSEI,1407.314085608,Gross Earnings File
+2e3,NSEI,1440.487082936,Gross Earnings File
+2001,NSEI,1025.129713392,Gross Earnings File
+2002,NSEI,958.576427192,Gross Earnings File
+2003,NSEI,959.783435504,Gross Earnings File
+2004,NSEI,1057.131536176,Gross Earnings File
+2005,NSEI,978.64061572,Gross Earnings File
+2006,NSEI,971.010744688,Gross Earnings File
+2007,NSEI,732.894902736,Gross Earnings File
+2008,NSEI,741.5775608,Gross Earnings File
+2009,NSEI,540.784629384,Gross Earnings File
+2010,NSEI,512.92863748,Gross Earnings File
+2011,NSEI,427.33582708,Gross Earnings File
+2012,NSEI,481.434384144,Gross Earnings File
+2013,NSEI,471.104279936,Gross Earnings File
+2014,NSEI,384.363428184,Gross Earnings File
+2015,NSEI,383.470759128,Gross Earnings File
+2016,NSEI,316.085131608,Gross Earnings File
+2017,NSEI,337.686997016,Gross Earnings File
+2018,NSEI,396.797292088,Gross Earnings File
+1975,SSEI,255.181333768,Gross Earnings File
+1976,SSEI,52.677453328,Gross Earnings File
+1977,SSEI,35.675917984,Gross Earnings File
+1978,SSEI,97.127201368,Gross Earnings File
+1979,SSEI,102.17613392,Gross Earnings File
+1980,SSEI,20.106826176,Gross Earnings File
+1981,SSEI,24.281686944,Gross Earnings File
+1982,SSEI,126.65649416,Gross Earnings File
+1983,SSEI,32.369685896,Gross Earnings File
+1984,SSEI,90.982844136,Gross Earnings File
+1985,SSEI,280.987997016,Gross Earnings File
+1986,SSEI,358.902855632,Gross Earnings File
+1987,SSEI,240.23819892,Gross Earnings File
+1988,SSEI,348.341419504,Gross Earnings File
+1989,SSEI,443.422920952,Gross Earnings File
+1990,SSEI,351.106062744,Gross Earnings File
+1991,SSEI,331.324915624,Gross Earnings File
+1992,SSEI,435.333107632,Gross Earnings File
+1993,SSEI,396.107378656,Gross Earnings File
+1994,SSEI,408.369331192,Gross Earnings File
+1995,SSEI,313.049240352,Gross Earnings File
+1996,SSEI,248.782965016,Gross Earnings File
+1997,SSEI,344.987106664,Gross Earnings File
+1998,SSEI,276.266104296,Gross Earnings File
+1999,SSEI,315.529935,Gross Earnings File
+2e3,SSEI,286.345372128,Gross Earnings File
+2001,SSEI,308.374974792,Gross Earnings File
+2002,SSEI,311.56780888000003,Gross Earnings File
+2003,SSEI,316.433036672,Gross Earnings File
+2004,SSEI,314.456736328,Gross Earnings File
+2005,SSEI,291.266391736,Gross Earnings File
+2006,SSEI,302.48462908,Gross Earnings File
+2007,SSEI,298.928014208,Gross Earnings File
+2008,SSEI,298.132867432,Gross Earnings File
+2009,SSEI,284.446182424,Gross Earnings File
+2010,SSEI,267.874652296,Gross Earnings File
+2011,SSEI,263.619052152,Gross Earnings File
+2012,SSEI,255.150489512,Gross Earnings File
+2013,SSEI,243.026428944,Gross Earnings File
+2014,SSEI,237.88405644,Gross Earnings File
+2015,SSEI,243.92590188,Gross Earnings File
+2016,SSEI,229.080289312,Gross Earnings File
+2017,SSEI,244.666164024,Gross Earnings File
+2018,SSEI,275.39384688,Gross Earnings File

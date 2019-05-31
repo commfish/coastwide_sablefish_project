@@ -1,15 +1,16 @@
 # Sablefish fishery and survey biological data summaries 
 # Data request from K. Fenske 2017-12-26
 # Jane Sullivan (jane.sullivan1@alaska.gov)
-# 2018-01-08
+# Last updated 2019-05-31-08
 
 # Includes age and length compositions, proportions mature at age, length and
 # weight-at-age for sablefish fishery and survey data in Southeast Alaska.
 
-# Libraries and ggplot theme ----
+# Set-up ----
 
-library(tidyverse)
-library(mosaic)
+source("r/helper.r")
+
+YEAR <- 2018 # use to update data files (most recent year of data)
 
 # Data ----
 
@@ -20,13 +21,13 @@ library(mosaic)
 # Source: fishery or survey
 # Mgmt_area: NSEI is Chatham Strait, SSEI is Clarence Strait
 
-read_csv("data/biological/survey/detailed_llsrvbio_nsei_ssei_1985_2017.csv",
+read_csv(paste0("data/biological/survey/detailed_llsrvbio_nsei_ssei_1985_", YEAR, ".csv"),
          guess_max = 50000) -> srv_bio
 
-read_csv("data/biological/survey/detailed_potsrvbio_nsei_ssei_1979_2017.csv",
+read_csv(paste0("data/biological/survey/detailed_potsrvbio_nsei_ssei_1979_", YEAR, ".csv"),
          guess_max = 50000) -> potsrv_bio
 
-read_csv("data/biological/fishery/detailed_fisherybio_nsei_ssei_1988_2017.csv", 
+read_csv(paste0("data/biological/fishery/detailed_fisherybio_nsei_ssei_1998_", YEAR, ".csv"), 
          guess_max = 50000) -> fsh_bio
 
 bind_rows(srv_bio, potsrv_bio, fsh_bio) -> bio
@@ -43,11 +44,11 @@ bio %>%
 # Analysis conducted at various levels of detail, new column "description"
 # describes what factors are used to obtain age comps. 
 
-# Get subset. 42+ = plus group
+# Get subset. 31+ = plus group
 bio %>% select(year, Gear, Source, Mgmt_area, Sex, age) %>% 
   filter(Sex %in% c('Female', 'Male') & !is.na(age)) %>% 
   droplevels() %>% 
-  mutate(age = ifelse(age >= 42, 42, age)) -> agedat   
+  mutate(age = ifelse(age >= 31, 31, age)) -> agedat   
 
 agedat %>% 
   # Age comps by Source, Gear, year, area, and Sex 
@@ -86,12 +87,13 @@ agedat %>%
 
 # Length comps ----
 
-# Pers. comm. K. Fenske 2018-01-05: NMFS uses length bins 41, 43, 45 ... 99.
-# These bins represent the center of the bin, so a 43 bin represents fish
-# 42-43.9 cm. They omit fish smaller than 40 or larger than 100 cm for the
-# length comp analysis. I've maintained these conventions for easy comparison:
+# Pers. comm. K. Fenske 2018-01-05 and D. Hanselman 2019-04-18: NMFS uses length
+# bins 41, 43, 45 ... 99. These bins represent the center of the bin, so a 43
+# bin represents fish 42-43.9 cm. They omit fish smaller than 40 or lump
+# everythign larger than 100 cm for the length comp analysis. I've maintained
+# these conventions for easy comparison:
 bio %>% 
-  filter(!c(length < 40 | length > 100)) %>% 
+  filter(!c(length < 40)) %>% 
   mutate(length2 = ifelse(length < 41, 41,
                            ifelse(length > 99, 99, length)),
          length_bin = cut(length2, breaks = seq(39.9, 99.9, 2),
