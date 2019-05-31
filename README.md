@@ -13,7 +13,7 @@ Pers. comm. with K. Fenske 2018-01-03: she already has Aluetian Is. data from AK
 Carlile et al. 2002 historical catch time series from 1907-1984 and GEF
 1985-present for NSEI (Region I, Chatham Strait). For SSEI (Region I, Clarence Strait) and  PWS (Region II, Prince William Sound), we used GEF for 1975-present. 
 
-Column descriptions for GEF are in data/catch/gross_earnings_file/GEF_Variable_Descriptions_Working_JShriver_2014_12_08.xlsx. Descriptions for ADFG management areas can be found in adfg_mgt_area_metadata_slarsen.shp. S. Larsen also helped me update some of the stat area NAs in Region 1 and 2, source file data/catch/gross_earnings_file/SJL_region2_statareas_districts
+**For a summary of catch in NSEI, SSEI, and PWS use data/catch/catch_nsei_ssei_pws_1907_2018_USEME.csv**
 
 ![alt text](https://github.com/commfish/coastwide_sablefish_project/blob/master/total_catch_1907_2018.png)
 
@@ -26,6 +26,8 @@ There are currently four "extra" data files for catch:
 3.  data/catch/region1_ifdb/region1_sablecatch_1969_2018_CONFIDENTIAL.csv -- These are from the Region I fish ticket database. It's used for annual management reports and the stock assessment. These data have high agreement with GEF from 1985-present in NSEI and SSEI.
 
 4.  data/catch/nsei_historicalsablecatch_nosource_carlile_1907_2000.csv -- An interesting but undocumented time series of catch in Chatham Strait going back to 1907. Published in Carlile et al 2002 (Regional Information Report No.1 1J02-02) *Used on Google Drive and in figure above*
+
+Column descriptions for GEF are in data/catch/gross_earnings_file/GEF_Variable_Descriptions_Working_JShriver_2014_12_08.xlsx. Descriptions for ADFG management areas can be found in adfg_mgt_area_metadata_slarsen.shp. S. Larsen also helped me update some of the stat area NAs in Region 1 and 2, source file data/catch/gross_earnings_file/SJL_region2_statareas_districts
 
 ## Abundance index estimates (or absolute abundance) from survey, mark-recapture, or fishery data, by year, standardized if possible or noted as unstandardized if they aren’t. Biomass and abundance only available for Chatham Strait.
 
@@ -51,12 +53,12 @@ Biological data are available for the following Gear/Source/Mgmt_area combinatio
 
 |      Gear|  Source| Mgmt_area| min_year| max_year|
 |----------|--------|----------|---------|---------|
-|  Longline| Fishery|      NSEI|     2000|     2017|
-|  Longline| Fishery|      SSEI|     2001|     2017|
-|  Longline|  Survey|      NSEI|     1985|     2017|
-|  Longline|  Survey|      SSEI|     1986|     2017|
-|       Pot| Fishery|      SSEI|     1998|     2017|
-|       Pot|  Survey|      NSEI|     1981|     2017|
+|  Longline| Fishery|      NSEI|     2000|     2018|
+|  Longline| Fishery|      SSEI|     2001|     2018|
+|  Longline|  Survey|      NSEI|     1985|     2018|
+|  Longline|  Survey|      SSEI|     1986|     2018|
+|       Pot| Fishery|      SSEI|     1998|     2018|
+|       Pot|  Survey|      NSEI|     1981|     2018|
 |       Pot|  Survey|      SSEI|     1979|     1983|
 
 The requested summaries are available in data/biological: allsable_proportionmature.csv, allsable_agecomps.csv, allsable_lengthcomps.csv, allsable_lengthage.csv, and allsable_lengthweight.csv. Analysis was conducted at various levels of detail, specified by the "description" column. For example, I provided output for NSEI/SSEI separately and combined.
@@ -73,10 +75,10 @@ Results for the following analyses can be found in data/effort/all_cpue_indices.
 
 |      Gear|  Source| Mgmt_area| min_year| max_year|
 |----------|--------|----------|---------|---------|
-|  Longline|  Survey|      NSEI|    1985<sup>1</sup>|     2017|         
-|  Longline|  Survey|      SSEI|    1988<sup>1</sup>|     2017|
-|  Longline| Fishery|      NSEI|     1997|     2017|
-|  Longline| Fishery|      SSEI|     1997|     2017|
+|  Longline|  Survey|      NSEI|    1985<sup>1</sup>|     2018|         
+|  Longline|  Survey|      SSEI|    1988<sup>1</sup>|     2018|
+|  Longline| Fishery|      NSEI|     1997|     2018|
+|  Longline| Fishery|      SSEI|     1997|     2018|
 
 <sup>1</sup> Soak time in the surveys was 1 hour prior to 1997, and 3 hours in 1997 to present. According to Carlile et al. (2002), 1-hour soak time CPUEs were about 43% lower than those associated with 3-hour soak times (Page 10 http://www.sf.adfg.state.ak.us/fedaidpdfs/RIR.1J.2002.02.pdf). One could correct pre-1997 survey data by dividing by 0.43. If absolutely necessary, I suggest using a higher CV pre-1997, or omit these years entirely. Experiments (Sigler 1993, UW PhD dissertation) and summaries (Sigler 2000, Tech Report NMFS 130) indicate that initial capture rates vary without trend in the first hour and thus appear to have no relationship with density of sablefish. Consequently, I chose not to include pre-1997 longline survey effort indices, although the raw data are available in data/effort/llsrv_cpue_nsei_ssei_raw.csv if desired.
 
